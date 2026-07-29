@@ -1,0 +1,21 @@
+use flip_flop::*;
+
+fn main() {
+    let example = open_file("./data/examples/01.txt");
+    for line in example {
+        println!("{line}");
+    }
+}
+
+
+fn part_1(_: &[&str]) -> usize {
+    0
+}
+
+fn part_2(_: &[&str]) -> usize {
+    0
+}
+
+fn part_3(_: &[&str]) -> usize {
+    0
+}
