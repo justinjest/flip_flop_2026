@@ -131,11 +131,18 @@ fn traverse_roads_illegally(input: &[Road], row_offset: usize) -> usize {
     let mut roads_visited = 0;
     let mut illegal_turns = 0;
     loop {
-        if roads[pos].visited == true {
-            if illegal_turns >= 4 {
+        let visited = roads[pos].visited;
+        let row = pos / row_offset;
+        let col = pos % row_offset;
+        let on_edge =
+            row == 0 || row == (input.len() / row_offset) - 1 || col == 0 || col == row_offset - 1;
+
+        if visited && !on_edge == true {
+            if illegal_turns >= 3 {
                 return roads_visited;
             }
             illegal_turns += 1;
+
             let direction = roads[pos].direction;
             match direction {
                 '^' => pos = pos + 1,
@@ -144,28 +151,20 @@ fn traverse_roads_illegally(input: &[Road], row_offset: usize) -> usize {
                 'v' => pos = pos - 1,
                 _ => panic!("Invalid character"),
             }
-
-            let row = pos / row_offset;
-            let col = pos % row_offset;
-            if row != 0
-                && row != (input.len() / row_offset) - 1
-                && col != 0
-                && col != row_offset - 1
-            {
+        } else {
+            if roads[pos].visited == true {
                 return roads_visited;
             }
-
+            let direction = roads[pos].direction;
+            roads[pos].visit();
             roads_visited += 1;
-        }
-        let direction = roads[pos].direction;
-        roads[pos].visit();
-        roads_visited += 1;
-        match direction {
-            '^' => pos = pos - row_offset,
-            '>' => pos = pos + 1,
-            '<' => pos = pos - 1,
-            'v' => pos = pos + row_offset,
-            _ => panic!("Invalid character"),
+            match direction {
+                '^' => pos = pos - row_offset,
+                '>' => pos = pos + 1,
+                '<' => pos = pos - 1,
+                'v' => pos = pos + row_offset,
+                _ => panic!("Invalid character"),
+            }
         }
     }
 }
